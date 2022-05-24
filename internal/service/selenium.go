@@ -1,0 +1,100 @@
+package service
+
+import (
+	"crawler/project/internal/utils"
+	"fmt"
+	"log"
+	"os"
+	"runtime"
+	"strconv"
+	"time"
+
+	"github.com/tebeka/selenium"
+	"github.com/tebeka/selenium/chrome"
+)
+
+type Selenium struct {
+	seleniumPath           string
+	seleniumPort           string
+	browserAgent           string
+	urlDataPath            string
+	urlReportPath          string
+	webOperateWaittingTime string
+}
+
+func NewWebSeleniumService() *Selenium {
+	return &Selenium{
+		seleniumPath:           "SELENIUM_DRIVE_PATH",
+		seleniumPort:           "SELENIUM_PORT",
+		browserAgent:           "USER_AGENT",
+		urlDataPath:            "URL_DATA_PATH",
+		urlReportPath:          "URL_REPORT_PATH",
+		webOperateWaittingTime: "WEB_OPERATE_WAITTING_SECOND",
+	}
+}
+
+type delegFunc func() (interface{}, error)
+
+func (se *Selenium) ExecuteFunc(fun delegFunc) (interface{}, error) {
+	waittingTime := 1 * time.Second
+	OperateWaittingTime, _ := strconv.ParseFloat(utils.GetEnvData(se.webOperateWaittingTime), 64)
+	if OperateWaittingTime > 0 {
+		waittingTime = time.Duration(OperateWaittingTime * float64(time.Second))
+	}
+
+	time.Sleep(waittingTime)
+	Data, err := fun()
+	time.Sleep(waittingTime)
+	return Data, err
+}
+
+func (se *Selenium) SeleniumWebDriverSetting(sPort int) (selenium.WebDriver, error) {
+	//呼叫瀏覽器
+	//設定瀏覽器相容性，我們設定瀏覽器名稱為chrome
+	caps := selenium.Capabilities{"browserName": "chrome"}
+
+	chromeCaps := chrome.Capabilities{
+		Path: "",
+		Args: []string{
+			//"--headless", // 设置Chrome无头模式，在linux下运行，需要设置这个参数，否则会报错
+			//"--no-sandbox",
+			fmt.Sprintf("--user-agent=%s", utils.GetEnvData(se.browserAgent)), // 模拟user-agent，防反爬
+		},
+	}
+	//以上是设置浏览器参数
+	caps.AddChrome(chromeCaps)
+
+	//呼叫瀏覽器urlPrefix: 測試參考：DefaultURLPrefix = "http://127.0.0.1:4444/wd/hub"
+	return selenium.NewRemote(caps, fmt.Sprintf("http://127.0.0.1:%d/wd/hub", sPort))
+
+}
+
+func (se *Selenium) SeleniumServiceSetting(path string, port int) (*selenium.Service, error) {
+
+	opts := []selenium.ServiceOption{
+		selenium.Output(os.Stderr), // Output debug information to STDERR.
+	}
+
+	if runtime.GOOS == "linux" {
+		opts = append(opts, selenium.StartFrameBuffer()) // Start an X frame buffer for the browser to run in.
+	}
+
+	// selenium.SetDebug(true)
+
+	service, err := selenium.NewChromeDriverService(path, port, opts...)
+
+	return service, err
+}
+
+func (se *Selenium) GetSelPathAndPort() (string, int) {
+	path := utils.GetEnvData(se.seleniumPath)
+	port := utils.GetEnvData(se.seleniumPort)
+
+	// sPath = "/Users/garyshih/go/pkg/mod/github.com/tebeka/selenium@v0.9.9/vendor/chromedriver"
+	sPath := utils.FilePath(path)
+	sPort, err := strconv.Atoi(port)
+	if err != nil {
+		log.Fatal(err, ", port need to be integer")
+	}
+	return sPath, sPort
+}
