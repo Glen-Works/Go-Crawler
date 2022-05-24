@@ -57,9 +57,10 @@ func (wc *WebCrawler) GetDataWriteToTg(cc []*utils.CrawlerConfig) {
 			varietyStr := utils.StringFormatByList(varietyData, utils.GetEnvData(wc.varietySettingString))
 			fmt.Println(crawlerStr)
 			fmt.Println(varietyStr)
+
 			telegramRobotService := NewTelegramRobotService()
-			telegramRobotService.sendMsg(crawlerStr)
-			telegramRobotService.sendMsg(varietyStr)
+			telegramRobotService.sendMsg(utils.GetTimeNow("现在时间") + crawlerStr)
+			telegramRobotService.sendMsg(utils.GetTimeNow("分析时间") + varietyStr)
 			defer wg.Done()
 		}(value)
 	}

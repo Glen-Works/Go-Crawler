@@ -8,6 +8,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"time"
 )
 
 func Regex(RegexStr, filterRule string, GetCount int) []string {
@@ -95,4 +96,10 @@ func StringFormatByList(crawlerData map[string]string, settingStr string) string
 		crawlerStr += fmt.Sprintf("%s:%s \n", val+settingStr, crawlerData[val+settingStr])
 	}
 	return crawlerStr
+}
+
+func GetTimeNow(columnName string) string {
+	ShanghaiTimeZone, _ := time.LoadLocation("Asia/Shanghai")
+	newTime := time.Now().UTC().In(ShanghaiTimeZone)
+	return columnName + newTime.Format("2006-01-02 15:04") + "\n"
 }
