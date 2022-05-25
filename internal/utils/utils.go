@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"regexp"
+	"runtime"
 	"strconv"
 	"strings"
 	"time"
@@ -134,4 +135,17 @@ func GetIsDebug() bool {
 	}
 
 	return debug
+}
+func GetChromeDriveFilePath(filePath, fileName string) string {
+	switch strings.Trim(runtime.GOOS, " ") {
+	case "darwin":
+		filePath = filePath + "/mac"
+	case "windows":
+		filePath = filePath + "/windows"
+		fileName = fileName + ".exe"
+	default:
+		filePath = filePath + "/linux"
+
+	}
+	return fmt.Sprintf("%s/%s", filePath, fileName)
 }

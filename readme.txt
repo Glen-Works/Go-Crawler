@@ -14,7 +14,8 @@ WEB_OPERATE_WAITTING_SECOND 網頁跳轉等待時間正常>2，等待頁面資�
 ENV_DEBUG debug 狀態(true/false)
 WEB_RETRY_WAITTING_MiNUTE 重新執行時間 
 WEB_RETRY_LIMIT_MiNUTE 重新執行時間限制
-SELENIUM_DRIVE_PATH GoogleDrive 檔案路徑
+SELENIUM_DRIVE_PATH GoogleDrive 檔案路徑 
+SELENIUM_DRIVE_NAME GoogleDrive 檔名
 SELENIUM_PORT GoogleDrive 使用的port 
 CRAWLER_DATA_PATH 上一次資料的儲存路徑(json)
 URL_DATA_PATH 爬蟲網址路徑
@@ -27,5 +28,5 @@ TELEGRAM_GROUP_ID Telegram 聊天群組 取得方式參考(https://stackoverflow
 
 ##google相關設定
 查看chrome version: chrome://version
-下載ChromeDriver (須依照 chrome version)，放入crawler_data/(mac/windows/linux)資料夾中：https://sites.google.com/chromium.org/driver/downloads?authuser=0
+下載ChromeDriver (須依照 chrome version)，放入crawler_data/(mac/windows/linux)資料夾中，(檔案名稱為預設)：https://sites.google.com/chromium.org/driver/downloads?authuser=0
 安裝 jre (linux) : brew install xvfb openjdk-11-jre

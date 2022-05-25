@@ -15,6 +15,7 @@ import (
 
 type Selenium struct {
 	seleniumPath           string
+	seleniumName           string
 	seleniumPort           string
 	browserAgent           string
 	urlDataPath            string
@@ -25,6 +26,7 @@ type Selenium struct {
 func NewWebSeleniumService() *Selenium {
 	return &Selenium{
 		seleniumPath:           "SELENIUM_DRIVE_PATH",
+		seleniumName:           "SELENIUM_DRIVE_NAME",
 		seleniumPort:           "SELENIUM_PORT",
 		browserAgent:           "USER_AGENT",
 		urlDataPath:            "URL_DATA_PATH",
@@ -99,10 +101,11 @@ func (se *Selenium) SeleniumServiceSetting(path string, port int) (*selenium.Ser
 }
 
 func (se *Selenium) GetSelPathAndPort() (string, int) {
-	path := utils.GetEnvData(se.seleniumPath)
+
+	// path := utils.GetEnvData(se.seleniumPath)
+	path := utils.GetChromeDriveFilePath(utils.GetEnvData(se.seleniumPath), utils.GetEnvData(se.seleniumName))
 	port := utils.GetEnvData(se.seleniumPort)
 
-	// sPath = "/Users/garyshih/go/pkg/mod/github.com/tebeka/selenium@v0.9.9/vendor/chromedriver"
 	sPath := utils.FilePath(path)
 	sPort, err := strconv.Atoi(port)
 	if err != nil {
