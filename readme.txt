@@ -1,11 +1,12 @@
 ##登入器步驟
 需先開啟Boin登入器，啟動後才能訪問網頁
 設定音波後台登入網址，注意port每次開啟會更換，e.g. http://tianshi.boinht.com:57626/admin.html#/
-請對方給secret 設定到 GOOGLE_KEY，IP 也要請對方綁定
+IP 請對方綁定
+請對方給secret 設定到 Excel GoogleAuthSecret
 
 ##env 相關設定
-設定excel相關資料，WEB_URL(網址),GOOGLE_KEY,ACCOUNT,PASSWORD，資料夾位於crawler_data
-RUN_TIMER 計時器 請參考 golang cron 的套件設定方式 (https://pkg.go.dev/github.com/robfig/cron@v1.2.0)
+設定excel相關資料，WebUrl(網址),GoogleAuthSecret,Account,Password，資料夾位於crawler_data
+RUN_TIMER 計時器 請參考 golang cron 的套件設定方式 (https://pkg.go.dev/github.com/robfig/cron@v1.2.0)(預設每30分鐘執行一次)
 GOOGLE_AUTH_WAITTING_SECOND GooglAuth 的刷新等待，開啟瀏覽器登入時使用，如果電腦效能不好請往上加
 WEB_OPERATE_WAITTING_SECOND 網頁跳轉等待時間正常>2，等待頁面資料loading，如果電腦效能不好請往上加
 
