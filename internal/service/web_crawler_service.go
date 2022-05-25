@@ -33,7 +33,7 @@ func NewWebCrawlerService() *WebCrawler {
 }
 
 var wg sync.WaitGroup // 定义 WaitGroup
-func (wc *WebCrawler) CrawlerSearch(cc []*utils.CrawlerConfig) {
+func (wc *WebCrawler) CrawlerSearch(cc []*utils.CrawlerConfig) bool {
 
 	for _, value := range cc {
 		wg.Add(1) // 增加一个 wait 任务
@@ -44,7 +44,7 @@ func (wc *WebCrawler) CrawlerSearch(cc []*utils.CrawlerConfig) {
 		}(value)
 	}
 	wg.Wait()
-
+	return true
 }
 
 func (wc *WebCrawler) crawlerProccess(cc *utils.CrawlerConfig, runLimitTime time.Time) {
