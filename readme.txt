@@ -27,5 +27,5 @@ TELEGRAM_GROUP_ID Telegram 聊天群組 取得方式參考(https://stackoverflow
 
 ##google相關設定
 查看chrome version: chrome://version
-下載ChromeDriver (須依照 chrome version)，放入Chrome 資料夾中：https://sites.google.com/chromium.org/driver/downloads?authuser=0
+下載ChromeDriver (須依照 chrome version)，放入crawler_data/(mac/windows/linux)資料夾中：https://sites.google.com/chromium.org/driver/downloads?authuser=0
 安裝 jre (linux) : brew install xvfb openjdk-11-jre
