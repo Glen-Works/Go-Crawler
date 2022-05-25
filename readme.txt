@@ -10,6 +10,8 @@ GOOGLE_AUTH_WAITTING_SECOND GooglAuth 的刷新等待，開啟瀏覽器登入時
 WEB_OPERATE_WAITTING_SECOND 網頁跳轉等待時間正常>2，等待頁面資料loading，如果電腦效能不好請往上加
 
 ##env 相關設定(目前不需調整)
+WEB_RETRY_WAITTING_MiNUTE 重新執行時間 
+WEB_RETRY_LIMIT_MiNUTE 重新執行時間限制
 SELENIUM_DRIVE_PATH GoogleDrive 檔案路徑
 SELENIUM_PORT GoogleDrive 使用的port 
 CRAWLER_DATA_PATH 上一次資料的儲存路徑(json)

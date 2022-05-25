@@ -39,7 +39,8 @@ func (se *Selenium) ExecuteFunc(fun delegFunc) (interface{}, error) {
 	waittingTime := 1 * time.Second
 	OperateWaittingTime, _ := strconv.ParseFloat(utils.GetEnvData(se.webOperateWaittingTime), 64)
 	if OperateWaittingTime > 0 {
-		waittingTime = time.Duration(OperateWaittingTime * float64(time.Second))
+		// waittingTime = time.Duration(OperateWaittingTime * float64(time.Second))
+		waittingTime = utils.GetTimeSecond[float64](OperateWaittingTime)
 	}
 
 	time.Sleep(waittingTime)
@@ -56,7 +57,7 @@ func (se *Selenium) SeleniumWebDriverSetting(sPort int) (selenium.WebDriver, err
 	chromeCaps := chrome.Capabilities{
 		Path: "",
 		Args: []string{
-			//"--headless", // 设置Chrome无头模式，在linux下运行，需要设置这个参数，否则会报错
+			"--headless", // 设置Chrome无头模式，在linux下运行，需要设置这个参数，否则会报错
 			//"--no-sandbox",
 			fmt.Sprintf("--user-agent=%s", utils.GetEnvData(se.browserAgent)), // 模拟user-agent，防反爬
 		},

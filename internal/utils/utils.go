@@ -103,3 +103,25 @@ func GetTimeNow(columnName string) string {
 	newTime := time.Now().UTC().In(ShanghaiTimeZone)
 	return columnName + newTime.Format("2006-01-02 15:04") + "\n"
 }
+
+func GetTimeSecond[T float64 | int64](second T) time.Duration {
+	return time.Duration(second * T(time.Second))
+}
+
+func GetRetryWaittingTime() time.Duration {
+	waittingTime := 1 * time.Minute
+	OperateWaittingTime, _ := strconv.ParseFloat(GetEnvData("WEB_RETRY_WAITTING_MiNUTE"), 64)
+	if OperateWaittingTime > 0 {
+		waittingTime = GetTimeSecond[float64](OperateWaittingTime * 60)
+	}
+	return waittingTime
+}
+
+func GetRetryLimitTime() time.Duration {
+	retryLimitTime := 1 * time.Minute
+	OperateWaittingTime, _ := strconv.ParseFloat(GetEnvData("WEB_RETRY_LIMIT_MiNUTE"), 64)
+	if OperateWaittingTime > 0 {
+		retryLimitTime = GetTimeSecond[float64](OperateWaittingTime * 60)
+	}
+	return retryLimitTime
+}
