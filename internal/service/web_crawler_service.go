@@ -69,24 +69,30 @@ func (wc *WebCrawler) crawlerProccess(cc *utils.CrawlerConfig, runLimitTime time
 
 	//read from json
 	crawlerBefore := wc.ReadToJson(crawlerData, cc.Account)
-	fmt.Println("before data:", crawlerBefore)
 	//write to json
 	wc.WriteToJson(crawlerData, cc.Account)
-	fmt.Println("now data:", crawlerData)
 
 	//variety
 	varietyData := utils.VarietyTwo[map[string]string](crawlerData, crawlerBefore, utils.GetEnvData(wc.varietySettingString))
-	fmt.Println("variety data:", varietyData)
+
+	if utils.GetIsDebug() {
+		fmt.Printf("\n before data:%v \n", crawlerBefore)
+		fmt.Printf("\n now data:%v \n", crawlerData)
+		fmt.Printf("\n variety data:%v \n\n", varietyData)
+	}
 
 	//TG
 	crawlerStr := utils.StringFormatByList(crawlerData, "")
 	varietyStr := utils.StringFormatByList(varietyData, utils.GetEnvData(wc.varietySettingString))
-	fmt.Println(crawlerStr)
-	fmt.Println(varietyStr)
+
+	timeNow := utils.GetTimeNow("现在时间")
+	timeAnalysis := utils.GetTimeNow("分析时间")
+	fmt.Println(timeNow + crawlerStr)
+	fmt.Println(timeAnalysis + varietyStr)
 
 	telegramRobotService := NewTelegramRobotService()
-	telegramRobotService.sendMsg(utils.GetTimeNow("现在时间") + crawlerStr)
-	telegramRobotService.sendMsg(utils.GetTimeNow("分析时间") + varietyStr)
+	telegramRobotService.sendMsg(timeNow + crawlerStr)
+	telegramRobotService.sendMsg(timeAnalysis + varietyStr)
 
 	wg.Done()
 }

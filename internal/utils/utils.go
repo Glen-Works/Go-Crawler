@@ -8,6 +8,7 @@ import (
 	"os"
 	"regexp"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -124,4 +125,13 @@ func GetRetryLimitTime() time.Duration {
 		retryLimitTime = GetTimeSecond[float64](OperateWaittingTime * 60)
 	}
 	return retryLimitTime
+}
+
+func GetIsDebug() bool {
+	debug, err := strconv.ParseBool(strings.ToUpper(GetEnvData("ENV_DEBUG")))
+	if err != nil {
+		return false
+	}
+
+	return debug
 }

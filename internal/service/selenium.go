@@ -54,14 +54,21 @@ func (se *Selenium) SeleniumWebDriverSetting(sPort int) (selenium.WebDriver, err
 	//設定瀏覽器相容性，我們設定瀏覽器名稱為chrome
 	caps := selenium.Capabilities{"browserName": "chrome"}
 
+	arg := []string{
+		"--headless", // 设置Chrome无头模式
+		fmt.Sprintf("--user-agent=%s", utils.GetEnvData(se.browserAgent)), // 模拟user-agent，防反爬
+		"--ignore-certificate-errors",
+	}
+
+	if runtime.GOOS == "windows" {
+		arg = append(arg, "--disable-gpu")
+	}
+
 	chromeCaps := chrome.Capabilities{
 		Path: "",
-		Args: []string{
-			"--headless", // 设置Chrome无头模式，在linux下运行，需要设置这个参数，否则会报错
-			//"--no-sandbox",
-			fmt.Sprintf("--user-agent=%s", utils.GetEnvData(se.browserAgent)), // 模拟user-agent，防反爬
-		},
+		Args: arg,
 	}
+
 	//以上是设置浏览器参数
 	caps.AddChrome(chromeCaps)
 
@@ -73,7 +80,11 @@ func (se *Selenium) SeleniumWebDriverSetting(sPort int) (selenium.WebDriver, err
 func (se *Selenium) SeleniumServiceSetting(path string, port int) (*selenium.Service, error) {
 
 	opts := []selenium.ServiceOption{
-		selenium.Output(os.Stderr), // Output debug information to STDERR.
+		// selenium.Output(os.Stderr), // Output debug information to STDERR.
+	}
+
+	if utils.GetIsDebug() {
+		opts = append(opts, selenium.Output(os.Stderr)) // Output debug information to STDERR.
 	}
 
 	if runtime.GOOS == "linux" {
