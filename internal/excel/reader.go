@@ -56,7 +56,9 @@ func GetCrawlerConfigFromExcel() []*utils.CrawlerConfig {
 
 func ExcelReader(fileName, sheetName string) [][]string {
 	fileName = utils.FilePath(fileName)
-	// fmt.Println(fileName)
+	// if utils.GetIsDebug() {
+	// 	fmt.Println("filePath:", fileName)
+	// }
 
 	f, err := excelize.OpenFile(fileName)
 	if err != nil {

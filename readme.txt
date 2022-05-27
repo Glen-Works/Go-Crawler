@@ -25,6 +25,7 @@ VARIETY_SETTING_STRING (現在資料-過去資料) 輸出名稱 "變化"
 ##telegram 相關設定
 TELEGRAM_TOKEN Telegram 機器人token 取得方式參考(https://teleme.io/articles/create_your_own_telegram_bot?utm_source=web_console&utm_medium=EmptyBoardBot)
 TELEGRAM_GROUP_ID Telegram 聊天群組 取得方式參考(https://stackoverflow.com/questions/32423837/telegram-bot-how-to-get-a-group-chat-id)
+#TELEGRAM_GROUP_ID=-684306570
 
 ##google相關設定
 查看chrome version: chrome://version

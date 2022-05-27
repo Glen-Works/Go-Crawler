@@ -28,6 +28,12 @@ func FilePath(fileName string) string {
 		log.Fatal(err)
 	}
 
+	os := strings.Trim(runtime.GOOS, " ")
+	if os == "windows" {
+		fileName = strings.ReplaceAll(fileName, "/", "\\")
+		return fmt.Sprintf("%s\\%s", dir, fileName)
+	}
+
 	return fmt.Sprintf("%s/%s", dir, fileName)
 }
 
@@ -137,12 +143,17 @@ func GetIsDebug() bool {
 	return debug
 }
 func GetChromeDriveFilePath(filePath, fileName string) string {
-	switch strings.Trim(runtime.GOOS, " ") {
+
+	os := strings.Trim(runtime.GOOS, " ")
+	if os == "windows" {
+		// filePath = fmt.Sprintf("%s\\%s", filePath, "windows")
+		fileName = fileName + ".exe"
+		return strings.ReplaceAll(fmt.Sprintf("%s\\%s", filePath, fileName), "\\\\", "\\")
+	}
+
+	switch os {
 	case "darwin":
 		filePath = filePath + "/mac"
-	case "windows":
-		filePath = filePath + "/windows"
-		fileName = fileName + ".exe"
 	default:
 		filePath = filePath + "/linux"
 

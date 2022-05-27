@@ -4,7 +4,6 @@ import (
 	"crawler/project/internal/utils"
 	"fmt"
 	"log"
-	"os"
 	"runtime"
 	"strconv"
 	"time"
@@ -85,9 +84,9 @@ func (se *Selenium) SeleniumServiceSetting(path string, port int) (*selenium.Ser
 		// selenium.Output(os.Stderr), // Output debug information to STDERR.
 	}
 
-	if utils.GetIsDebug() {
-		opts = append(opts, selenium.Output(os.Stderr)) // Output debug information to STDERR.
-	}
+	// if utils.GetIsDebug() {
+	// 	opts = append(opts, selenium.Output(os.Stderr)) // Output debug information to STDERR.
+	// }
 
 	if runtime.GOOS == "linux" {
 		opts = append(opts, selenium.StartFrameBuffer()) // Start an X frame buffer for the browser to run in.
@@ -108,6 +107,10 @@ func (se *Selenium) GetSelPathAndPort() (string, int) {
 
 	sPath := utils.FilePath(path)
 	sPort, err := strconv.Atoi(port)
+	// if utils.GetIsDebug() {
+	// 	fmt.Println("filePath:", sPath)
+	// }
+
 	if err != nil {
 		log.Fatal(err, ", port need to be integer")
 	}

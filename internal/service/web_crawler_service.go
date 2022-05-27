@@ -75,11 +75,11 @@ func (wc *WebCrawler) crawlerProccess(cc *utils.CrawlerConfig, runLimitTime time
 	//variety
 	varietyData := utils.VarietyTwo[map[string]string](crawlerData, crawlerBefore, utils.GetEnvData(wc.varietySettingString))
 
-	if utils.GetIsDebug() {
-		fmt.Printf("\n before data:%v \n", crawlerBefore)
-		fmt.Printf("\n now data:%v \n", crawlerData)
-		fmt.Printf("\n variety data:%v \n\n", varietyData)
-	}
+	// if utils.GetIsDebug() {
+	// 	fmt.Printf("\n before data:%v \n", crawlerBefore)
+	// 	fmt.Printf("\n now data:%v \n", crawlerData)
+	// 	fmt.Printf("\n variety data:%v \n\n", varietyData)
+	// }
 
 	//TG
 	crawlerStr := utils.StringFormatByList(crawlerData, "")
