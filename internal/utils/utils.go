@@ -107,9 +107,12 @@ func StringFormatByList(crawlerData map[string]string, settingStr string) string
 }
 
 func GetTimeNow(columnName string) string {
-	ShanghaiTimeZone, _ := time.LoadLocation("Asia/Shanghai")
-	newTime := time.Now().UTC().In(ShanghaiTimeZone)
-	return columnName + newTime.Format("2006-01-02 15:04") + "\n"
+	// ShanghaiTimeZone, _ := time.LoadLocation("Asia/Shanghai")
+	// localTime, err := time.ParseInLocation("2006-01-02 15:04:05", "2017-12-03 22:01:02", ShanghaiTimeZone)
+	// newTime := time.Now().UTC().In(ShanghaiTimeZone)
+	t, _ := time.ParseInLocation("2006-01-02 15:04:05", time.Now().Format("2006-01-02 15:04:05"), time.Local)
+	return columnName + t.Format("2006-01-02 15:04") + "\n"
+	// return columnName + localTime.Format("2006-01-02 15:04") + "\n"
 }
 
 func GetTimeSecond[T float64 | int64](second T) time.Duration {

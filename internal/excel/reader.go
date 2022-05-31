@@ -2,6 +2,7 @@ package excel
 
 import (
 	"crawler/project/internal/utils"
+	"fmt"
 	"log"
 	"strings"
 
@@ -13,6 +14,8 @@ const (
 	GoogleAuthSecret
 	Account
 	Password
+	TelegramGroupId
+	TelegramToken
 )
 
 func GetCrawlerConfigFromExcel() []*utils.CrawlerConfig {
@@ -48,6 +51,8 @@ func GetCrawlerConfigFromExcel() []*utils.CrawlerConfig {
 			GoogleAuthSecret: rowContent[columneName[GoogleAuthSecret]],
 			Account:          rowContent[columneName[Account]],
 			Password:         rowContent[columneName[Password]],
+			TelegramGroupId:  rowContent[columneName[TelegramGroupId]],
+			TelegramToken:    rowContent[columneName[TelegramToken]],
 		}
 		cc = append(cc, crawler)
 	}
@@ -56,9 +61,9 @@ func GetCrawlerConfigFromExcel() []*utils.CrawlerConfig {
 
 func ExcelReader(fileName, sheetName string) [][]string {
 	fileName = utils.FilePath(fileName)
-	// if utils.GetIsDebug() {
-	// 	fmt.Println("filePath:", fileName)
-	// }
+	if utils.GetIsDebug() {
+		fmt.Println("filePath:", fileName)
+	}
 
 	f, err := excelize.OpenFile(fileName)
 	if err != nil {

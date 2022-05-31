@@ -37,7 +37,7 @@ func main() {
 	defer c.Stop()
 	for {
 		// fmt.Println("排成等待時間")
-		time.Sleep(1 * time.Minute)
+		time.Sleep(1 * time.Second)
 	}
 
 }

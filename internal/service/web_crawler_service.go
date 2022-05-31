@@ -48,23 +48,32 @@ func (wc *WebCrawler) CrawlerSearch(cc []*utils.CrawlerConfig) bool {
 }
 
 func (wc *WebCrawler) crawlerProccess(cc *utils.CrawlerConfig, runLimitTime time.Time) {
+
+	//telegram service
+	telegramRobotService := NewTelegramRobotService()
+
 	defer func() {
 		// 可以取得 err 的回傳值
 		if r := recover(); r != nil {
+			timeNow := utils.GetTimeNow("執行時間")
 			// 超過時間跳出
 			if time.Now().After(runLimitTime) {
-				log.Printf("\n抓取錯誤，url:%s,account:%s，錯誤:%s \n", cc.WebUrl, cc.Account, r)
+				errStr := fmt.Sprintf("%s抓取錯誤，url:%s，account:%s，已超出重新執行時間，錯誤:%s \n", timeNow, cc.WebUrl, cc.Account, r)
+				fmt.Printf(errStr)
+				telegramRobotService.SendMsg(errStr, cc)
 				wg.Done()
 				return
 			}
 
 			time.Sleep(utils.GetRetryWaittingTime())
-			fmt.Printf("\n抓取錯誤，url:%s,account:%s,重新執行，錯誤:%s \n", cc.WebUrl, cc.Account, r)
+			errStr := fmt.Sprintf("%s抓取錯誤，url:%s，account:%s，重新執行，錯誤:%s \n", timeNow, cc.WebUrl, cc.Account, r)
+			fmt.Printf(errStr)
+			telegramRobotService.SendMsg(errStr, cc)
 			wc.crawlerProccess(cc, runLimitTime)
 		}
 	}()
 
-	cc.GoogleAuthCode = wc.search(cc)
+	cc.GoogleAuthCode = wc.getGoogleAuth(cc)
 	crawlerData := wc.GetWebData(cc)
 
 	//read from json
@@ -75,11 +84,11 @@ func (wc *WebCrawler) crawlerProccess(cc *utils.CrawlerConfig, runLimitTime time
 	//variety
 	varietyData := utils.VarietyTwo[map[string]string](crawlerData, crawlerBefore, utils.GetEnvData(wc.varietySettingString))
 
-	// if utils.GetIsDebug() {
-	// 	fmt.Printf("\n before data:%v \n", crawlerBefore)
-	// 	fmt.Printf("\n now data:%v \n", crawlerData)
-	// 	fmt.Printf("\n variety data:%v \n\n", varietyData)
-	// }
+	if utils.GetIsDebug() {
+		fmt.Printf("\n before data:帐号：%s\n%v \n", cc.Account, crawlerBefore)
+		fmt.Printf("\n now data:帐号：%s\n%v \n", cc.Account, crawlerData)
+		fmt.Printf("\n variety data:帐号：%s\n%v \n\n", cc.Account, varietyData)
+	}
 
 	//TG
 	crawlerStr := utils.StringFormatByList(crawlerData, "")
@@ -87,12 +96,15 @@ func (wc *WebCrawler) crawlerProccess(cc *utils.CrawlerConfig, runLimitTime time
 
 	timeNow := utils.GetTimeNow("现在时间")
 	timeAnalysis := utils.GetTimeNow("分析时间")
-	fmt.Println(timeNow + crawlerStr)
-	fmt.Println(timeAnalysis + varietyStr)
+	fmt.Printf("帐号：%s\n%v\n", cc.Account, timeAnalysis+crawlerStr)
+	fmt.Printf("帐号：%s\n%v\n", cc.Account, timeAnalysis+varietyStr)
+	// fmt.Println(timeNow + crawlerStr)
+	// fmt.Println(timeNow + varietyStr)
 
-	telegramRobotService := NewTelegramRobotService()
-	telegramRobotService.sendMsg(timeNow + crawlerStr)
-	telegramRobotService.sendMsg(timeAnalysis + varietyStr)
+	// telegramRobotService.SendMsg(crawlerStr)
+	// telegramRobotService.SendMsg(varietyStr)
+	telegramRobotService.SendMsg(fmt.Sprintf("帐号：%s\n%v", cc.Account, timeNow+crawlerStr), cc)
+	telegramRobotService.SendMsg(fmt.Sprintf("帐号：%s\n%v", cc.Account, timeAnalysis+varietyStr), cc)
 
 	wg.Done()
 }
@@ -210,12 +222,16 @@ func (wc *WebCrawler) GetWebData(cc *utils.CrawlerConfig) map[string]string {
 	})
 	wd = wdInterface.(selenium.WebDriver)
 	if err != nil {
-		log.Panic(err, "\"/LiveTotalData\"錯誤")
+		log.Panic(err, fmt.Sprintf("\"%s\"錯誤", seleniumService.urlDataPath))
 	}
 
 	tagDataItem, err := wd.FindElements(selenium.ByClassName, "dataItem")
 	if err != nil {
-		log.Panic(err, "取登入\"input\"錯誤")
+		log.Panic(err, "資料抓取\"dataItem\"錯誤")
+	}
+
+	if len(tagDataItem) == 0 {
+		log.Panic("資料抓取\"dataItem\"數量為0")
 	}
 
 	return wc.getDataInfoByDom(tagDataItem)
@@ -288,7 +304,7 @@ func (wc *WebCrawler) getDataInfoByDom(tagDataItem []selenium.WebElement) map[st
 	return dataInfo
 }
 
-func (wc *WebCrawler) search(cc *utils.CrawlerConfig) string {
+func (wc *WebCrawler) getGoogleAuth(cc *utils.CrawlerConfig) string {
 
 	count, remainTime := wc.getUnixCountAndDuration(wc.timeBase)
 	authWaitting, _ := strconv.ParseFloat(utils.GetEnvData(wc.authWaitting), 64)

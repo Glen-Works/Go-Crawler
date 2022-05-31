@@ -6,4 +6,6 @@ type CrawlerConfig struct {
 	Account          string
 	Password         string
 	GoogleAuthCode   string
+	TelegramGroupId  string
+	TelegramToken    string
 }

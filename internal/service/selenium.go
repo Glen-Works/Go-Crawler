@@ -4,12 +4,14 @@ import (
 	"crawler/project/internal/utils"
 	"fmt"
 	"log"
+	"os"
 	"runtime"
 	"strconv"
 	"time"
 
 	"github.com/tebeka/selenium"
 	"github.com/tebeka/selenium/chrome"
+	seleLog "github.com/tebeka/selenium/log"
 )
 
 type Selenium struct {
@@ -58,7 +60,8 @@ func (se *Selenium) SeleniumWebDriverSetting(sPort int) (selenium.WebDriver, err
 	arg := []string{
 		"--headless", // 设置Chrome无头模式
 		fmt.Sprintf("--user-agent=%s", utils.GetEnvData(se.browserAgent)), // 模拟user-agent，防反爬
-		"--ignore-certificate-errors",
+		// "--ignore-certificate-errors",
+		"--disable-gpu",
 	}
 
 	if runtime.GOOS == "windows" {
@@ -71,6 +74,15 @@ func (se *Selenium) SeleniumWebDriverSetting(sPort int) (selenium.WebDriver, err
 	}
 
 	//以上是设置浏览器参数
+	if !utils.GetIsDebug() {
+		caps.SetLogLevel(seleLog.Server, seleLog.Off)
+		caps.SetLogLevel(seleLog.Browser, seleLog.Off)
+		caps.SetLogLevel(seleLog.Client, seleLog.Off)
+		caps.SetLogLevel(seleLog.Driver, seleLog.Off)
+		caps.SetLogLevel(seleLog.Performance, seleLog.Off)
+		caps.SetLogLevel(seleLog.Profiler, seleLog.Off)
+	}
+
 	caps.AddChrome(chromeCaps)
 
 	//呼叫瀏覽器urlPrefix: 測試參考：DefaultURLPrefix = "http://127.0.0.1:4444/wd/hub"
@@ -84,9 +96,11 @@ func (se *Selenium) SeleniumServiceSetting(path string, port int) (*selenium.Ser
 		// selenium.Output(os.Stderr), // Output debug information to STDERR.
 	}
 
-	// if utils.GetIsDebug() {
-	// 	opts = append(opts, selenium.Output(os.Stderr)) // Output debug information to STDERR.
-	// }
+	if utils.GetIsDebug() {
+		opts = append(opts, selenium.Output(os.Stderr)) // Output debug information to STDERR.
+	} else {
+		// opts = append(opts, selenium.Output(os.Stderr)) // Output debug information to STDERR.
+	}
 
 	if runtime.GOOS == "linux" {
 		opts = append(opts, selenium.StartFrameBuffer()) // Start an X frame buffer for the browser to run in.
@@ -107,9 +121,9 @@ func (se *Selenium) GetSelPathAndPort() (string, int) {
 
 	sPath := utils.FilePath(path)
 	sPort, err := strconv.Atoi(port)
-	// if utils.GetIsDebug() {
-	// 	fmt.Println("filePath:", sPath)
-	// }
+	if utils.GetIsDebug() {
+		fmt.Println("filePath:", sPath)
+	}
 
 	if err != nil {
 		log.Fatal(err, ", port need to be integer")

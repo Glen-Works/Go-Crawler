@@ -9,28 +9,23 @@ import (
 )
 
 type TelegramRobot struct {
-	groupId string
-	token   string
 }
 
 func NewTelegramRobotService() *TelegramRobot {
-	return &TelegramRobot{
-		groupId: "TELEGRAM_GROUP_ID",
-		token:   "TELEGRAM_TOKEN",
-	}
+	return &TelegramRobot{}
 }
 
-func (tr *TelegramRobot) sendMsg(msg string) {
-	var err error
-	bot, err := tgbotapi.NewBotAPI(utils.GetEnvData(tr.token))
+func (tr *TelegramRobot) SendMsg(msg string, cc *utils.CrawlerConfig) {
+
+	bot, err := tgbotapi.NewBotAPI(cc.TelegramToken)
 	if err != nil {
-		log.Fatal(err)
+		log.Panicf("Telegram token err:%s", err)
 	}
 	bot.Debug = false
 
-	groupId, err := strconv.ParseInt(utils.GetEnvData(tr.groupId), 10, 64)
+	groupId, err := strconv.ParseInt(cc.TelegramGroupId, 10, 64)
 	if err != nil {
-		log.Fatal("Telegram group id err")
+		log.Panicf("Telegram group id err:%s", err)
 	}
 
 	NewMsg := tgbotapi.NewMessage(groupId, msg)
