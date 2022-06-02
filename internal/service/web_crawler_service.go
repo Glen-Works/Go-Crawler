@@ -250,7 +250,7 @@ func (wc *WebCrawler) getDataInfoByDom(tagDataItem []selenium.WebElement) map[st
 			continue
 		}
 
-		span, err := tagSpan.Text()
+		span, err := tagSpan.GetAttribute("innerHTML")
 		if err != nil {
 			log.Println(err, "取資料\"span 文字\"錯誤")
 			continue
@@ -268,8 +268,7 @@ func (wc *WebCrawler) getDataInfoByDom(tagDataItem []selenium.WebElement) map[st
 		}
 
 		for _, trValue := range tr {
-
-			trText, err := trValue.Text()
+			trText, err := trValue.GetAttribute("innerHTML")
 			if err != nil {
 				log.Println(err, "取資料\"tr text\"錯誤")
 				continue
@@ -284,7 +283,7 @@ func (wc *WebCrawler) getDataInfoByDom(tagDataItem []selenium.WebElement) map[st
 						log.Println(err, "取資料\"td tag\"錯誤")
 						continue
 					}
-					tdText, err := td[1].Text()
+					tdText, err := td[1].GetAttribute("innerHTML")
 					if err != nil {
 						log.Println(err, "取資料\"td text\"錯誤")
 						continue
