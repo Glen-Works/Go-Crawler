@@ -149,7 +149,7 @@ func GetChromeDriveFilePath(filePath, fileName string) string {
 
 	os := strings.Trim(runtime.GOOS, " ")
 	if os == "windows" {
-		// filePath = fmt.Sprintf("%s\\%s", filePath, "windows")
+		filePath = fmt.Sprintf("%s\\%s", filePath, "windows")
 		fileName = fileName + ".exe"
 		return strings.ReplaceAll(fmt.Sprintf("%s\\%s", filePath, fileName), "\\\\", "\\")
 	}
