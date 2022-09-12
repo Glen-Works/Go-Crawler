@@ -214,6 +214,13 @@ func (wc *WebCrawler) GetWebData(cc *utils.CrawlerConfig) map[string]string {
 	if url[len(url)-1:] == "/" {
 		url = url[:len(url)-1]
 	}
+
+	index := strings.Index(url, "?")
+
+	if index >= 0 {
+		url = strings.Trim(url[0:index], "/")
+	}
+
 	newUrl := url + utils.GetEnvData(seleniumService.urlDataPath)
 
 	//所有會跳轉或送出，需等待後再執行
