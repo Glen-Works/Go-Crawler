@@ -60,7 +60,7 @@ func (wc *WebCrawler) crawlerProccess(cc *utils.CrawlerConfig, runLimitTime time
 			if time.Now().After(runLimitTime) {
 				errStr := fmt.Sprintf("%s抓取錯誤，url:%s，account:%s，已超出重新執行時間，錯誤:%s \n", timeNow, cc.WebUrl, cc.Account, r)
 				fmt.Printf(errStr)
-				telegramRobotService.SendMsg(errStr, cc)
+				// telegramRobotService.SendMsg(errStr, cc)
 				wg.Done()
 				return
 			}
@@ -68,7 +68,7 @@ func (wc *WebCrawler) crawlerProccess(cc *utils.CrawlerConfig, runLimitTime time
 			time.Sleep(utils.GetRetryWaittingTime())
 			errStr := fmt.Sprintf("%s抓取錯誤，url:%s，account:%s，重新執行，錯誤:%s \n", timeNow, cc.WebUrl, cc.Account, r)
 			fmt.Printf(errStr)
-			telegramRobotService.SendMsg(errStr, cc)
+			// telegramRobotService.SendMsg(errStr, cc)
 			wc.crawlerProccess(cc, runLimitTime)
 		}
 	}()
